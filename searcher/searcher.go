@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"index/suffixarray"
 	"io/ioutil"
-	"strings"
 )
 
 type Searcher struct {
@@ -23,7 +22,6 @@ func (s *Searcher) Load(filename string) error {
 }
 
 func (s *Searcher) Search(query string) []string {
-	query = strings.ToUpper
 	idxs := s.SuffixArray.Lookup([]byte(query), -1)
 	results := []string{}
 	for _, idx := range idxs {
