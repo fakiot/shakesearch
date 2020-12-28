@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// Searcher searcher struct to handle with text file
 type Searcher struct {
 	CompleteWorks string
 	SuffixArray   *suffixarray.Index
@@ -38,7 +39,7 @@ func (s *Searcher) Load(filename string) error {
 // the it if necessary can be cached and return by pages
 // - Markdown answer not added to not added not builtin package, but it can be added later
 func (s *Searcher) Search(query string) []string {
-	lineDelimiter := []byte("\r\n")
+	lineDelimiter := []byte("\n")
 	const maxChar = 200
 	const delimiterString = "***"
 
@@ -61,13 +62,15 @@ func (s *Searcher) Search(query string) []string {
 		// the string added is *** that can be converted to bold in markdown
 		snip = snip[:idxRel] + delimiterString + snip[idxRel:idxRel+lq] + delimiterString + snip[idxRel+lq:]
 		snips := strings.Split(snip, " ")
+		// trim spaces, ignore last word if it is not a full word and add "..."
 		snip = strings.TrimSpace(strings.Join(snips[:len(snips)-1], " ")) + "..."
 		results = append(results, string(snip))
 	}
 	return results
 }
 
-// binarySearch recursive binary search algorithm to find delimiters
+// binarySearch recursive binary search algorithm to find delimiters and
+// returns a slice with the start and end of line
 func binarySearch(t int, p []int) []int {
 	l := (len(p) >> 1)
 	if len(p) == 3 {
